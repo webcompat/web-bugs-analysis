@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+(
+  TIMESTAMP=$(date '+%Y%m%d_%H%M')
+  TMPFILE=$(mktemp /tmp/web-bugs-snapshot.XXXXXX)
+
+  cd $(dirname "${BASH_SOURCE[0]}")/../../data/current/
+  tar -czf $TMPFILE --transform "s,^,$TIMESTAMP/," ./
+
+  cd ../snapshots/
+  mv $TMPFILE $TIMESTAMP.tar.gz
+  ln -fs $TIMESTAMP.tar.gz latest.tar.gz
+  chown -h 10001:10001 *
+)

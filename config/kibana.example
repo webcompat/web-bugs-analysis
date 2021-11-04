@@ -1,0 +1,11 @@
+# The public address where Kibana is found. The path is always `/kibana` and
+# cannot be changed.
+SERVER_PUBLICBASEURL=https://web-bugs-analysis.example.com/kibana
+
+# Access credentials to allow Kibana to access ElasticSearch
+ELASTICSEARCH_USERNAME=kibana_system
+ELASTICSEARCH_PASSWORD=abcdefghijklmnopqrstuvxyz
+
+# These are fixed and should not be changed.
+ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+SERVER_BASEPATH=/kibana

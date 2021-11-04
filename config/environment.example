@@ -1,0 +1,21 @@
+# A bot account's PAT. The `repo` permission is required - `public_repo` is not
+# enough since we need to access the private repo.
+GITHUB_PERSONAL_ACCESS_TOKEN=ghp_abcdefghijklmnopqrstuvxyz
+
+# The org containing both repos, and the repository names.
+GITHUB_ORG=webcompat
+GITHUB_REPO_PRIVATE=web-bugs-private
+GITHUB_REPO_PUBLIC=web-bugs
+
+# Delay in seconds between a bug download queue item being inserted and it being
+# processed. See _docs/architecture.md for more information.
+BUG_INACTIVITY_DELAY=300
+
+# The common Redis database URL for queueing download and index runs. There
+# shouldn't be a need to change this.
+REDIS_URL_QUEUE=redis://redis/0
+
+# The URL and API key other components can use to connect to the Elasticsearch
+# instance.
+ELASTIC_NODE=http://elasticsearch:9200
+ELASTIC_API_KEY=abcdefghijklmnopqrstuvxyz

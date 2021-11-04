@@ -1,0 +1,7 @@
+{
+  "extends": "ts-node/node14/tsconfig.json",
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "outDir": "./bin"
+  }
+}

@@ -1,0 +1,95 @@
+version: "3"
+services:
+  downloader:
+    build: ./src/downloader
+    depends_on:
+      - redis
+    restart: always
+    volumes:
+      - ./data:/data
+    env_file: ./config/environment
+    networks:
+      - internal
+      - external
+
+  indexer:
+    build: ./src/indexer
+    depends_on:
+      - elasticsearch
+      - redis
+    restart: always
+    volumes:
+      - ./data:/data
+    env_file: ./config/environment
+    networks:
+      - internal
+      - external
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.1
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - xpack.security.authc.api_key.enabled=true
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - internal
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.15.1
+    depends_on:
+      - elasticsearch
+    env_file: ./config/kibana
+    networks:
+      - internal
+
+  queue-cli:
+    build: ./src/queue-cli
+    depends_on:
+      - redis
+    restart: "no"
+    command: "noop"
+    env_file: ./config/environment
+    networks:
+      - internal
+
+  redis:
+    image: redis:latest
+    restart: always
+    volumes:
+      - redis-data:/data
+    networks:
+      - internal
+
+  reverse-proxy:
+    build: ./src/reverse-proxy
+    depends_on:
+      - webhook-receiver
+    restart: always
+    volumes:
+      - ./config/htpasswd-data:/etc/nginx/conf.d/htpasswd-data:ro
+      - ./data:/data:ro
+    networks:
+      - internal
+      - external
+    ports:
+      - "127.0.0.1:8080:80"
+
+  webhook-receiver:
+    build: ./src/webhook-receiver
+    depends_on:
+      - redis
+    restart: always
+    env_file: ./config/environment
+    networks:
+      - internal
+
+networks:
+  internal:
+    internal: true
+  external:
+
+volumes:
+  elasticsearch-data:
+  redis-data:
