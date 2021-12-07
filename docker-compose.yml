@@ -58,6 +58,7 @@ services:
     env_file: ./config/environment
     networks:
       - internal
+      - external
 
   redis:
     image: redis:latest

@@ -1,7 +1,17 @@
 import { createClient as RedisCreateClient } from "redis";
+import { Octokit } from "octokit";
 
+const GITHUB_ORG = process.env.GITHUB_ORG!;
+const GITHUB_PERSONAL_ACCESS_TOKEN = process.env.GITHUB_PERSONAL_ACCESS_TOKEN!;
+const GITHUB_REPO_PUBLIC = process.env.GITHUB_REPO_PUBLIC!;
 const REDIS_URL_QUEUE = process.env.REDIS_URL_QUEUE;
+
 const RedisClient = RedisCreateClient({ url: REDIS_URL_QUEUE });
+
+const GithubClient = new Octokit({
+  auth: GITHUB_PERSONAL_ACCESS_TOKEN,
+  userAgent: "web-bugs-analysis/queue-cli",
+});
 
 (async () => {
   await RedisClient.connect();
@@ -28,6 +38,29 @@ const RedisClient = RedisCreateClient({ url: REDIS_URL_QUEUE });
       for (let i = bugStart; i <= bugEnd; i++) {
         await RedisClient.set(`${args[1]}:${i}`, "0");
       }
+      break;
+    }
+
+    case "add-updated-since": {
+      if (args.length != 3) {
+        console.log(`USAGE: add-updated-since [queue] [timestamp as ISO 8601 (YYYY-MM-DDTHH:MM:SSZ)]`);
+        break;
+      }
+
+      const issueIterator = GithubClient.paginate.iterator(GithubClient.rest.issues.listForRepo, {
+        owner: GITHUB_ORG,
+        repo: GITHUB_REPO_PUBLIC,
+        state: "all",
+        per_page: 100,
+        since: args[2],
+      });
+
+      for await (const response of issueIterator) {
+        for (const issue of response.data) {
+          await RedisClient.set(`${args[1]}:${issue.number}`, "0");
+        }
+      }
+
       break;
     }
 

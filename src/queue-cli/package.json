@@ -8,6 +8,7 @@
     "production:run": "node ./bin/main.js"
   },
   "dependencies": {
+    "octokit": "1.7.0",
     "redis": "4.0.0-rc.3"
   },
   "devDependencies": {

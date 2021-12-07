@@ -34,6 +34,18 @@ docker-compose run --rm queue-cli add-range index 1 91234
 
 This is useful to download the entire repo, or to index data you've restored from a backup or snapshot.
 
+## Add issues updated since a certain timestamp to the queue
+
+```
+docker-compose run --rm queue-cli add-updated-since [queue] [timestamp as ISO 8601 (YYYY-MM-DDTHH:MM:SSZ)]
+```
+
+Example, which would queue all issues updated since UTC-midnight on December 1st, 2021 for download:
+
+```
+docker-compose run --rm queue-cli add-updated-since download 2021-12-01T00:00:00Z
+```
+
 ## Getting the length of a queue
 
 ```
