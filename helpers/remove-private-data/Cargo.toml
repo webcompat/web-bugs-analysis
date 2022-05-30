@@ -1,0 +1,12 @@
+[package]
+name = "remove-private-data"
+description = "Iterates over an extracted snapshot and removes all private bugs"
+version = "1.0.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "3", features = ["derive"] }
+rayon = "1.5"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+walkdir = "2"
